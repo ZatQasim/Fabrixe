@@ -1,0 +1,50 @@
+# Fabrixe Configuration
+# Edit this file to customize your installation.
+# After changes, restart Fabrixe: systemctl restart fabrixe
+
+server:
+  host: "0.0.0.0"        # Bind address (0.0.0.0 for all interfaces)
+  port: 8443             # HTTPS port
+  http_redirect_port: 80 # HTTP → HTTPS redirect (set to 0 to disable)
+  static_dir: "/opt/fabrixe/web"
+
+database:
+  path: "/var/lib/fabrixe/fabrixe.db"
+
+tls:
+  cert_dir: "/etc/fabrixe/certs"
+  hostnames:
+    - "fabrixe.local"
+    - "localhost"
+    # Add your server's LAN hostname or IP:
+    # - "server.company.local"
+    # - "192.168.1.50"
+
+jwt:
+  # secret: ""  # Leave empty to auto-generate a persistent secret
+  access_token_ttl_minutes: 60
+  refresh_token_ttl_days: 7
+
+security:
+  allowed_origins:
+    - "https://fabrixe.local"
+    - "https://localhost:8443"
+    # Add your LAN IP if needed:
+    # - "https://192.168.1.50:8443"
+  rate_limit_per_minute: 120
+  session_timeout_minutes: 480  # 8 hours
+  max_login_attempts: 5
+  lockout_minutes: 15
+
+mdns:
+  hostname: "fabrixe"   # Registers as fabrixe.local on the LAN
+
+modules:
+  system_management:
+    enabled: true
+  deployment_automation:
+    enabled: true
+  internal_security:
+    enabled: true
+  protected_communication:
+    enabled: true

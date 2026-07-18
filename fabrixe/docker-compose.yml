@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  fabrixe:
+    image: fabrixe:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fabrixe
+    restart: unless-stopped
+    network_mode: host   # host networking required for mDNS (fabrixe.local)
+    volumes:
+      - fabrixe-data:/var/lib/fabrixe
+      - fabrixe-config:/etc/fabrixe
+    environment:
+      - FABRIXE_LOG_LEVEL=info
+    # For the first run, initialize with:
+    #   docker compose run --rm fabrixe -config /etc/fabrixe/config.yaml -init
+    command: ["-config", "/etc/fabrixe/config.yaml"]
+    healthcheck:
+      test: ["CMD", "curl", "-fk", "https://localhost:8443/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  fabrixe-data:
+    driver: local
+  fabrixe-config:
+    driver: local
